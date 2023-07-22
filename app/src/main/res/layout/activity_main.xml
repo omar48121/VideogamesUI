@@ -35,8 +35,8 @@
 
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="201dp"
-        android:layout_height="0dp"
+        android:layout_width="205dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="257dp"
         android:text="Ingresar"
         app:layout_constraintBottom_toBottomOf="parent"
