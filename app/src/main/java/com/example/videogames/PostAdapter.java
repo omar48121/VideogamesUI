@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +27,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public PostAdapter(Context context) {
         this.context = context;
+        this.posts = new ArrayList<>();
     }
 
     @NonNull
