@@ -1,25 +1,39 @@
 package com.example.videogames;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import retrofit2.Call;
@@ -30,10 +44,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Home extends AppCompatActivity {
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     private RecyclerView recyclerViewPosts;
     private PostAdapter postAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Uri selectedImageUri;
+    ActivityResultLauncher<Intent> pickPhotoLauncher;
+    Button buttonUploadImage;
+    ImageView previewImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +67,35 @@ public class Home extends AppCompatActivity {
         postAdapter = new PostAdapter(this);
         recyclerViewPosts.setAdapter(postAdapter);
 
-        // Configurar el SwipeRefreshLayout
+        // Verificar si ya se tiene el permiso de la cámara
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
+        }
+        // Verificar si el permiso ya ha sido concedido
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+
+        pickPhotoLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        selectedImageUri = data.getData();
+                        // Mostrar la imagen en el ImageView de previsualización
+
+                        if (previewImage != null) {
+                            previewImage.setVisibility(View.VISIBLE);
+                            previewImage.setImageURI(selectedImageUri);
+                            Toast.makeText(this, "cargada", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "imagen null", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // Ocultar el botón "Seleccionar imagen"
+                        buttonUploadImage.setVisibility(View.GONE);
+                    }
+                });
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -63,21 +109,41 @@ public class Home extends AppCompatActivity {
         fabCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Lógica para crear un nuevo post
-                // Crear el diálogo personalizado
                 AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
                 View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_post, null);
                 builder.setView(dialogView);
 
                 // Obtener referencias a los elementos del diálogo
                 EditText editTextContent = dialogView.findViewById(R.id.editTextContent);
-                Button buttonUploadImage = dialogView.findViewById(R.id.buttonUploadImage);
+                buttonUploadImage = dialogView.findViewById(R.id.buttonUploadImage);
+                previewImage = dialogView.findViewById(R.id.imagePreviewX);
 
                 // Configurar el botón de cargar imagen (si es necesario)
                 buttonUploadImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        // Crear un arreglo de opciones para el diálogo
+                        final CharSequence[] options = {"Cámara", "Galería", "Cancelar"};
 
+                        // Crear el diálogo de opciones
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder.setTitle("Seleccionar una opción");
+                        builder.setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (options[item].equals("Cámara")) {
+                                    dispatchTakePictureIntent();
+                                } else if (options[item].equals("Galería")) {
+                                    // Abrir la galería para seleccionar una imagen
+                                    Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                    pickPhotoLauncher.launch(pickPhotoIntent);
+                                } else if (options[item].equals("Cancelar")) {
+                                    // Cerrar el diálogo sin hacer nada
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+                        builder.show();
                     }
                 });
 
@@ -172,14 +238,40 @@ public class Home extends AppCompatActivity {
             }
         });
     }
+
+    private Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(Home.this, "No se pudo abrir la cámara", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            // La foto fue tomada con éxito, aquí puedes obtener la imagen
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            selectedImageUri = getImageUri(Home.this, imageBitmap);
+
+            if (previewImage != null) {
+                previewImage.setVisibility(View.VISIBLE);
+                previewImage.setImageURI(selectedImageUri);
+            } else {
+                Toast.makeText(this, "imagen es null", Toast.LENGTH_SHORT).show();
+            }
+
+            buttonUploadImage.setVisibility(View.GONE);
+        }
+    }
 }
-
-
-
-/*List<Post> posts = new ArrayList<>();
-        posts.add(new Post("Omar Rodríguez", "Contenido del post número dos", "https://loremflickr.com/360/640", "Hace un momento"));
-        posts.add(new Post("Agustín Jaime", "Contenido del post 1", "https://loremflickr.com/640/360", "Hace un momento"));
-        posts.add(new Post("Omar Rodríguez", "Esta semana estará disponible en PlayStation 5 el nuevo juego de sony", "https://loremflickr.com/1920/1200", "Hace 3 minutos"));
-        posts.add(new Post("Dany Dorianth", "Contenido del post 3", "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80", "Hace una hora"));
-        // Agregar más posts aquí...
-        return posts;*/

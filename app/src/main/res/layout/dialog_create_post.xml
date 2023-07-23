@@ -23,4 +23,12 @@
         android:textColor="@color/black"
         android:text="Añadir imagen" />
 
+    <ImageView
+        android:id="@+id/imagePreviewX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
 </LinearLayout>
