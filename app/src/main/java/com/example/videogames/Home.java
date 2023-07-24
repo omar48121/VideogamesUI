@@ -81,14 +81,12 @@ public class Home extends AppCompatActivity {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
                         selectedImageUri = data.getData();
-                        // Mostrar la imagen en el ImageView de previsualización
 
                         if (previewImage != null) {
                             previewImage.setVisibility(View.VISIBLE);
                             previewImage.setImageURI(selectedImageUri);
-                            Toast.makeText(this, "cargada", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(this, "imagen null", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Error al cargar imagen (null)", Toast.LENGTH_SHORT).show();
                         }
 
                         // Ocultar el botón "Seleccionar imagen"
@@ -96,19 +94,20 @@ public class Home extends AppCompatActivity {
                     }
                 });
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        /* swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
                 getExamplePosts();
             }
-        });
+        }); */
 
         FloatingActionButton fabCreatePost = findViewById(R.id.fabCreatePost);
         fabCreatePost.setImageTintList(ColorStateList.valueOf(Color.WHITE));
         fabCreatePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                selectedImageUri = null;
                 AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
                 View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_post, null);
                 builder.setView(dialogView);
@@ -159,35 +158,41 @@ public class Home extends AppCompatActivity {
                         if (selectedImageUri != null) {
                             imageUrl = selectedImageUri.toString();
                         } else {
-                            imageUrl = "https://loremflickr.com/360/650";
+                            imageUrl = "";
                         }
 
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://10.0.2.2:3000/")
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
+                        if (content.isEmpty()) {
+                            Toast.makeText(Home.this, "Ingresa el texto de la publicación", Toast.LENGTH_SHORT).show();
+                        } else if (imageUrl.isEmpty()) {
+                            Toast.makeText(Home.this, "Selecciona una imagen", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://10.0.2.2:3000/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
 
-                        PostApiService apiInterface = retrofit.create(PostApiService.class);
+                            PostApiService apiInterface = retrofit.create(PostApiService.class);
 
-                        Call<Void> call = apiInterface.createPost(content, email, imageUrl);
-                        call.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                if (response.isSuccessful()) {
-                                    getExamplePosts();
-                                    Toast.makeText(Home.this, "Post creado", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(Home.this, "Post no creado", Toast.LENGTH_SHORT).show();
+                            Call<Void> call = apiInterface.createPost(content, email, imageUrl);
+                            call.enqueue(new Callback<Void>() {
+                                @Override
+                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                    if (response.isSuccessful()) {
+                                        getExamplePosts();
+                                        Toast.makeText(Home.this, "Post creado", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    } else {
+                                        Toast.makeText(Home.this, "Error al crear el post", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                Toast.makeText(Home.this, "Error en solicitud al server", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        dialog.dismiss();
+                                @Override
+                                public void onFailure(Call<Void> call, Throwable t) {
+                                    Toast.makeText(Home.this, "Error en solicitud al server", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -268,7 +273,7 @@ public class Home extends AppCompatActivity {
                 previewImage.setVisibility(View.VISIBLE);
                 previewImage.setImageURI(selectedImageUri);
             } else {
-                Toast.makeText(this, "imagen es null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error al cargar imagen (null)", Toast.LENGTH_SHORT).show();
             }
 
             buttonUploadImage.setVisibility(View.GONE);
