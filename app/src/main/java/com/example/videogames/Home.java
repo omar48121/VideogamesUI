@@ -63,15 +63,13 @@ public class Home extends AppCompatActivity {
 
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(this));
 
-        // Inicializar el adaptador sin datos
         postAdapter = new PostAdapter(this);
         recyclerViewPosts.setAdapter(postAdapter);
 
-        // Verificar si ya se tiene el permiso de la cámara
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
         }
-        // Verificar si el permiso ya ha sido concedido
+
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
@@ -89,7 +87,6 @@ public class Home extends AppCompatActivity {
                             Toast.makeText(this, "Error al cargar imagen (null)", Toast.LENGTH_SHORT).show();
                         }
 
-                        // Ocultar el botón "Seleccionar imagen"
                         buttonUploadImage.setVisibility(View.GONE);
                     }
                 });
@@ -112,32 +109,26 @@ public class Home extends AppCompatActivity {
                 View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_post, null);
                 builder.setView(dialogView);
 
-                // Obtener referencias a los elementos del diálogo
                 EditText editTextContent = dialogView.findViewById(R.id.editTextContent);
                 buttonUploadImage = dialogView.findViewById(R.id.buttonUploadImage);
                 previewImage = dialogView.findViewById(R.id.imagePreviewX);
 
-                // Configurar el botón de cargar imagen (si es necesario)
                 buttonUploadImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Crear un arreglo de opciones para el diálogo
-                        final CharSequence[] options = {"Cámara", "Galería", "Cancelar"};
+                        final CharSequence[] options = {"Galería", "Cancelar"};
 
-                        // Crear el diálogo de opciones
                         AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
                         builder.setTitle("Seleccionar una opción");
                         builder.setItems(options, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int item) {
-                                if (options[item].equals("Cámara")) {
-                                    dispatchTakePictureIntent();
+                                if (options[item].equals("si")) {
+                                    //dispatchTakePictureIntent();
                                 } else if (options[item].equals("Galería")) {
-                                    // Abrir la galería para seleccionar una imagen
                                     Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                                     pickPhotoLauncher.launch(pickPhotoIntent);
                                 } else if (options[item].equals("Cancelar")) {
-                                    // Cerrar el diálogo sin hacer nada
                                     dialog.dismiss();
                                 }
                             }
@@ -146,7 +137,6 @@ public class Home extends AppCompatActivity {
                     }
                 });
 
-                // Configurar los botones del diálogo
                 builder.setPositiveButton("Publicar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -251,20 +241,19 @@ public class Home extends AppCompatActivity {
         return Uri.parse(path);
     }
 
-    private void dispatchTakePictureIntent() {
+    /*private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(Home.this, "No se pudo abrir la cámara", Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // La foto fue tomada con éxito, aquí puedes obtener la imagen
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             selectedImageUri = getImageUri(Home.this, imageBitmap);
