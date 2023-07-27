@@ -19,4 +19,18 @@ public interface PostApiService {
             @Field("userEmail") String email,
             @Field("imageUrl") String imageUrl
     );
+
+    @FormUrlEncoded
+    @POST("posts/like")
+    Call<Void> increaseCounter(
+            @Field("userEmail") String userEmail,
+            @Field("postId") String postId
+    );
+
+    @FormUrlEncoded
+    @POST("posts/dislike")
+    Call<Void> decreaseCounter(
+            @Field("userEmail") String userEmail,
+            @Field("postId") String postId
+    );
 }

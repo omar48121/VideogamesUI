@@ -28,12 +28,14 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -63,7 +65,8 @@ public class Home extends AppCompatActivity {
 
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(this));
 
-        postAdapter = new PostAdapter(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        postAdapter = new PostAdapter(this, sharedPreferences);
         recyclerViewPosts.setAdapter(postAdapter);
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -141,8 +144,7 @@ public class Home extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String content = editTextContent.getText().toString();
-                        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-                        String email = sharedPreferences.getString("email", "");
+                        String email = getLoggedInUserEmail();
                         String imageUrl;
 
                         if (selectedImageUri != null) {
@@ -219,8 +221,8 @@ public class Home extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<Post> posts = response.body();
                     if (posts != null) {
-                        postAdapter.setPosts(posts);
-                        postAdapter.notifyDataSetChanged();
+                        String userEmail = getLoggedInUserEmail();
+                        getLikedPosts(userEmail, posts);
                     }
                 } else {
                     Toast.makeText(Home.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
@@ -229,9 +231,57 @@ public class Home extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(Home.this, "Fallo en la solicitud al servidor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Home.this, "(getExampleP) Fallo en la solicitud al servidor", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void getLikedPosts(String userEmail, List<Post> posts) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserApiService userApiService = retrofit.create(UserApiService.class);
+
+        Call<List<UserModel>> call = userApiService.getUsers();
+        call.enqueue(new Callback<List<UserModel>>() {
+            @Override
+            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                if (response.isSuccessful()) {
+                    List<UserModel> users = response.body();
+                    if (users != null) {
+                        // Buscar el usuario que coincida con el correo electrónico
+                        List<String> likedPosts = null;
+                        for (UserModel user : users) {
+                            if (user.getEmail().equals(userEmail)) {
+                                likedPosts = user.getLikedPosts();
+                                break;
+                            }
+                        }
+
+                        // Verificar que likedPosts no sea nulo antes de pasarlo al adaptador
+                        if (likedPosts != null) {
+                            postAdapter.setPosts(posts);
+                            postAdapter.setLikedPosts(likedPosts);
+                            postAdapter.notifyDataSetChanged();
+                        }
+                    }
+                } else {
+                    Toast.makeText(Home.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserModel>> call, Throwable t) {
+                Toast.makeText(Home.this, "(getLikedP) Fallo en la solicitud al servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public String getLoggedInUserEmail() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("email", "");
     }
 
     private Uri getImageUri(Context context, Bitmap bitmap) {

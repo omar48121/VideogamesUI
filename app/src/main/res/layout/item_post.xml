@@ -8,7 +8,7 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="6dp"
-    android:background="@color/white">
+    android:background="?android:attr/windowBackground">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/ic_heart_empty"
-                android:background="@android:color/white"
+                android:background="?android:attr/windowBackground"
                 android:contentDescription="Like post" />
 
             <!-- TextView para mostrar el número de likes -->
@@ -88,8 +88,7 @@
                 android:id="@+id/textViewLikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="@android:color/black" />
+                android:text="0" />
 
         </LinearLayout>
 
@@ -107,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_comment"
-                android:background="@android:color/white"
+                android:background="?android:attr/windowBackground"
                 android:contentDescription="Comment post" />
 
         </LinearLayout>
