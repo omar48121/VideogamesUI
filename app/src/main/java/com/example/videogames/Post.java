@@ -8,7 +8,6 @@ public class Post {
     private String imageUrl;
     private String date;
     private  int likes;
-    private boolean liked;
 
 
     public Post(String userEmail, String content, String imageUrl, String date) {
@@ -27,10 +26,6 @@ public class Post {
         return content;
     }
 
-//    public String getImageResource() {
-//        return imageUrl;
-//    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -39,19 +34,7 @@ public class Post {
         return date;
     }
 
-    public void incrementCounter() {
-        likes = likes + 1;
-    }
-
     public int getLikes() {
         return likes;
-    }
-
-    public boolean isLiked() {
-        return liked;
-    }
-
-    public void setLiked(boolean liked) {
-        this.liked = liked;
     }
 }

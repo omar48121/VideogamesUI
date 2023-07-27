@@ -80,21 +80,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             PostApiService apiInterface = retrofit.create(PostApiService.class);
             Call<Void> call;
 
+            int likesCount = post.getLikes();
+
             if (isLiked) {
                 call = apiInterface.decreaseCounter(getLoggedInUserEmail(), post.getDate());
-                Toast.makeText(context, "already liked", Toast.LENGTH_SHORT).show();
                 holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
+                holder.textViewLikes.setText(String.valueOf(likesCount - 1));
             } else {
                 call = apiInterface.increaseCounter(getLoggedInUserEmail(), post.getDate());
-                Toast.makeText(context, "no liked", Toast.LENGTH_SHORT).show();
                 holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_full);
+                holder.textViewLikes.setText(String.valueOf(likesCount + 1));
             }
 
             call.enqueue(new Callback<Void>() {
                 @Override
                 public void onResponse(Call<Void> call, Response<Void> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(v.getContext(), "respuesta exitosa", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Respuesta exitosa", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(v.getContext(), "respuesta fallida", Toast.LENGTH_SHORT).show();
                     }
