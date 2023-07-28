@@ -59,54 +59,74 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.textViewDate.setText(post.getDate());
         //holder.textViewDate.setText(friendlyTime);
         holder.textViewLikes.setText(String.valueOf(post.getLikes()));
+        holder.buttonHeart.setEnabled(!post.isLikesButtonDisabled());
         Glide.with(holder.itemView)
                 .load(post.getImageUrl()) // Reemplaza post.getImageUrl() con la URL de la imagen del post
                 .into(holder.imageViewPost);
         // set icons on load
-        boolean isLiked = isPostLikedByUser(post, likedPosts);
-        if (isLiked) {
+        final boolean[] isLiked = {isPostLikedByUser(post, likedPosts)};
+        final int[] likesCount = {post.getLikes()};
+        if (isLiked[0]) {
             holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_full);
         } else {
             holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
         }
 
         // update icons on click
-        holder.buttonHeart.setOnClickListener(v -> {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2:3000/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+        holder.buttonHeart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            PostApiService apiInterface = retrofit.create(PostApiService.class);
-            Call<Void> call;
+                if (!post.isLikesButtonDisabled()) {
+                    post.setLikesButtonDisabled(true);
+                    holder.buttonHeart.setEnabled(false);
 
-            int likesCount = post.getLikes();
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://10.0.2.2:3000/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
 
-            if (isLiked) {
-                call = apiInterface.decreaseCounter(getLoggedInUserEmail(), post.getDate());
-                holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
-                holder.textViewLikes.setText(String.valueOf(likesCount - 1));
-            } else {
-                call = apiInterface.increaseCounter(getLoggedInUserEmail(), post.getDate());
-                holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_full);
-                holder.textViewLikes.setText(String.valueOf(likesCount + 1));
-            }
+                    PostApiService apiInterface = retrofit.create(PostApiService.class);
+                    Call<Void> call;
 
-            call.enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(v.getContext(), "Respuesta exitosa", Toast.LENGTH_SHORT).show();
+                    if (isLiked[0]) {
+                        call = apiInterface.decreaseCounter(getLoggedInUserEmail(), post.getDate());
                     } else {
-                        Toast.makeText(v.getContext(), "respuesta fallida", Toast.LENGTH_SHORT).show();
+                        call = apiInterface.increaseCounter(getLoggedInUserEmail(), post.getDate());
                     }
-                }
 
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    Toast.makeText(v.getContext(), "Fallo en req al server", Toast.LENGTH_SHORT).show();
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            post.setLikesButtonDisabled(false);
+                            holder.buttonHeart.setEnabled(true);
+
+                            if (response.isSuccessful()) {
+                                if (isLiked[0]) {
+                                    holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
+                                    holder.textViewLikes.setText(String.valueOf(likesCount[0] - 1));
+                                    likesCount[0]--;
+                                } else {
+                                    holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_full);
+                                    holder.textViewLikes.setText(String.valueOf(likesCount[0] + 1));
+                                    likesCount[0]++;
+                                }
+                                isLiked[0] = !isLiked[0];
+                                Toast.makeText(v.getContext(), "Like guardado", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(v.getContext(), "Error al guardar like", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            post.setLikesButtonDisabled(false);
+                            holder.buttonHeart.setEnabled(true);
+                            Toast.makeText(v.getContext(), "Fallo en req al server", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
-            });
+            }
         });
 
         holder.imageViewPost.setOnClickListener(v -> {

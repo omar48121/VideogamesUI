@@ -7,7 +7,6 @@
     tools:context=".MainActivity">
 
 
-
     <EditText
         android:id="@+id/txtEmail"
         android:layout_width="wrap_content"
@@ -26,7 +25,7 @@
         android:id="@+id/txtPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="52dp"
         android:ems="10"
         android:hint="Contraseña"
         android:inputType="textPassword"
@@ -38,13 +37,27 @@
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="205dp"
-        android:layout_height="45dp"
-        android:layout_marginBottom="257dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="217dp"
         android:text="Ingresar"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+
+    <Switch
+        android:id="@+id/switchRemind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="13dp"
+        android:text="Recordar"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPassword"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

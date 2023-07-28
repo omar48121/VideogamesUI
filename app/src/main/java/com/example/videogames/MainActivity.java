@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import retrofit2.Call;
@@ -23,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextEmail;
     EditText editTextPassword;
     Button buttonLogin;
+    SharedPreferences sharedPreferences;
+    Switch switchRemind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,18 @@ public class MainActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.txtEmail);
         editTextPassword = findViewById(R.id.txtPassword);
         buttonLogin = findViewById(R.id.btnLogin);
+        switchRemind = findViewById(R.id.switchRemind);
+        sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+
+        if (sharedPreferences.getBoolean("remind", false)) {
+            if(sharedPreferences.contains("email")) {
+                String email = sharedPreferences.getString("email", "");
+                String password = sharedPreferences.getString("password", "");
+                editTextEmail.setText(email);
+                editTextPassword.setText(password);
+                switchRemind.setChecked(true);
+            }
+        }
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
                         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("email", email);
+                        editor.putString("password", password);
+                        editor.putBoolean("remind", switchRemind.isChecked());
                         editor.apply();
 
                         startActivity(new Intent(MainActivity.this, Home.class));

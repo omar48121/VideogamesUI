@@ -1,13 +1,12 @@
 package com.example.videogames;
 
-import java.util.List;
-
 public class Post {
     private String userEmail;
     private String content;
     private String imageUrl;
     private String date;
-    private  int likes;
+    private int likes;
+    private boolean likesButtonDisabled;
 
 
     public Post(String userEmail, String content, String imageUrl, String date) {
@@ -36,5 +35,13 @@ public class Post {
 
     public int getLikes() {
         return likes;
+    }
+
+    public boolean isLikesButtonDisabled() {
+        return likesButtonDisabled;
+    }
+
+    public void setLikesButtonDisabled(boolean likesButtonDisabled) {
+        this.likesButtonDisabled = likesButtonDisabled;
     }
 }
