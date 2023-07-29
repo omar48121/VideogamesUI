@@ -7,6 +7,20 @@
     tools:context=".MainActivity">
 
 
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="205dp"
+        android:layout_height="46dp"
+        android:backgroundTint="#DFDFDF"
+        android:text="Registrarse"
+        android:textColor="@color/my_light_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPassword"
+        app:layout_constraintVertical_bias="0.406" />
+
     <EditText
         android:id="@+id/txtEmail"
         android:layout_width="wrap_content"

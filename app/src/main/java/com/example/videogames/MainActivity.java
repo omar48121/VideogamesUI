@@ -90,11 +90,13 @@ public class MainActivity extends AppCompatActivity {
 
                         startActivity(new Intent(MainActivity.this, Home.class));
                         finish();
+                    } else if ("user doesnt exist".equals(message)) {
+                        Toast.makeText(MainActivity.this, "El usuario no existe", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(MainActivity.this, "Credenciales inválidas", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Error al validar usuario", Toast.LENGTH_SHORT).show();
                 }
             }
 
