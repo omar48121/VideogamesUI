@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextEmail;
     EditText editTextPassword;
     Button buttonLogin;
+    Button buttonRegister;
     SharedPreferences sharedPreferences;
     Switch switchRemind;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.txtEmail);
         editTextPassword = findViewById(R.id.txtPassword);
         buttonLogin = findViewById(R.id.btnLogin);
+        buttonRegister = findViewById(R.id.btnRegister);
         switchRemind = findViewById(R.id.switchRemind);
         sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
 
@@ -48,19 +50,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
+        buttonRegister.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, Register.class));
+        });
 
-                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(MainActivity.this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        buttonLogin.setOnClickListener(v -> {
+            String email = editTextEmail.getText().toString();
+            String password = editTextPassword.getText().toString();
 
-                loginUser(email, password);
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+                Toast.makeText(MainActivity.this, "Completa todos los campos", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            loginUser(email, password);
         });
     }
 
