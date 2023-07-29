@@ -15,6 +15,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -143,6 +149,57 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             dialog.show();
         });
+
+        holder.textViewAvatar.setOnClickListener(v -> showUserProfile(v, post));
+
+        holder.textViewName.setOnClickListener(v -> showUserProfile(v, post));
+    }
+
+    private void showUserProfile(View v, Post post) {
+        final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_NoActionBar);
+        dialog.setContentView(R.layout.dialog_profile);
+
+        TextView textViewFullName = dialog.findViewById(R.id.textViewFullname);
+        TextView textViewEmail = dialog.findViewById(R.id.textViewEmail);
+        TextView textViewBirthDate = dialog.findViewById(R.id.textViewBirthDate);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:3000/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        UserApiService userApiService = retrofit.create(UserApiService.class);
+        Call<UserModel> call = userApiService.getByEmail(post.getUserEmail());
+
+        call.enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(new Gson().toJson(response.body()));
+                        String fullName = jsonObject.getString("name") + " " + jsonObject.getString("lastName");
+                        String email = jsonObject.getString("email");
+                        String birthDate = jsonObject.getString("birthDate");
+
+                        textViewFullName.setText(fullName);
+                        textViewEmail.setText("Correo: " + email);
+                        textViewBirthDate.setText("Fecha de nacimiento: " + birthDate.substring(0, 12));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+                Toast.makeText(v.getContext(), "Error del servidor", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        TextView textClose = dialog.findViewById(R.id.textClose);
+        textClose.setOnClickListener(v1 -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private String getLoggedInUserEmail() {
