@@ -66,11 +66,6 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
-            if (birthDate.isEmpty()) {
-                editTextDate.setError("Ingresa tu fecha de nacimiento");
-                return;
-            }
-
             if (password.isEmpty()) {
                 editTextPassword.setError("Ingresa tu contraseña");
                 return;
@@ -78,6 +73,11 @@ public class Register extends AppCompatActivity {
 
             if (password.length() < 4) {
                 editTextPassword.setError("Ingresa al menos 4 carácteres");
+                return;
+            }
+
+            if (birthDate.isEmpty()) {
+                editTextDate.setError("Ingresa tu fecha de nacimiento");
                 return;
             }
 
