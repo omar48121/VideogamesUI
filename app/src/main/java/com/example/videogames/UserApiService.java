@@ -17,4 +17,14 @@ public interface UserApiService {
     Call<UserModel> getByEmail(
             @Field("email") String email
     );
+
+    @FormUrlEncoded
+    @POST("users/register")
+    Call<Void> registerUser(
+            @Field("name") String name,
+            @Field("lastName") String lastName,
+            @Field("email") String email,
+            @Field("birthDate") String birthDate,
+            @Field("password") String password
+    );
 }

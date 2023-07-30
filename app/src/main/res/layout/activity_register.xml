@@ -9,72 +9,111 @@
     tools:layout_editor_absoluteY="11dp">
 
     <Button
-        android:id="@+id/btnLogin2"
+        android:id="@+id/btnBackToLogin"
         android:layout_width="205dp"
         android:layout_height="46dp"
-        android:text="Registarme"
-        android:textColor="@color/white"
+        android:layout_marginBottom="104dp"
+        android:backgroundTint="#DFDFDF"
+        android:text="Iniciar sesión"
+        android:textColor="@color/my_light_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDate"
-        app:layout_constraintVertical_bias="0.073" />
+        app:layout_constraintTop_toBottomOf="@+id/btnConfirmRegister" />
+
+    <Button
+        android:id="@+id/btnConfirmRegister"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="1dp"
+        android:text="Registarme"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/btnBackToLogin"
+        app:layout_constraintEnd_toEndOf="@+id/btnBackToLogin"
+        app:layout_constraintStart_toStartOf="@+id/btnBackToLogin"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
+        android:layout_marginBottom="76dp"
         android:text="Crear nueva cuenta"
         android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/editTextName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginBottom="28dp"
         android:ems="10"
         android:hint="Nombre"
         android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/editTextLastname"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/editTextLastname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="Apellidos"
         android:inputType="text"
-        app:layout_constraintStart_toStartOf="@+id/editTextText"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintBottom_toTopOf="@+id/editTextTextEmail"
+        app:layout_constraintStart_toStartOf="@+id/editTextName"
+        app:layout_constraintTop_toBottomOf="@+id/editTextName" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/editTextTextEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
         android:ems="10"
         android:hint="Correo"
         android:inputType="textEmailAddress"
-        app:layout_constraintStart_toStartOf="@+id/editTextText2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
+        app:layout_constraintStart_toStartOf="@+id/editTextLastname"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLastname" />
 
     <EditText
-        android:id="@+id/editTextDate"
+        android:id="@+id/editTextBirthDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:ems="10"
         android:hint="Fecha de nacimiento"
         android:inputType="date"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextEmailAddress"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="@+id/editTextTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginBottom="30dp"
+        android:text="Formato yyyy-mm-dd"
+        app:layout_constraintBottom_toTopOf="@+id/btnConfirmRegister"
+        app:layout_constraintStart_toStartOf="@+id/editTextBirthDate"
+        app:layout_constraintTop_toBottomOf="@+id/editTextBirthDate" />
+
+    <EditText
+        android:id="@+id/editTextTextPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:ems="10"
+        android:hint="Contraseña"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/editTextBirthDate"
+        app:layout_constraintStart_toStartOf="@+id/editTextTextEmail"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmail" />
 </androidx.constraintlayout.widget.ConstraintLayout>
