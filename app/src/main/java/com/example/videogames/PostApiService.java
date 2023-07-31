@@ -13,6 +13,20 @@ public interface PostApiService {
     Call<List<Post>> getPosts();
 
     @FormUrlEncoded
+    @POST("comments")
+    Call<Void> createComment(
+            @Field("userEmail") String email,
+            @Field("text") String content,
+            @Field("postId") String imageUrl
+    );
+
+    @FormUrlEncoded
+    @POST("comments/search")
+    Call<List<Comment>> getByDate(
+            @Field("postId") String postId
+    );
+
+    @FormUrlEncoded
     @POST("posts")
     Call<Void> createPost(
             @Field("content") String content,

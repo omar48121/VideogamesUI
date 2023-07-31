@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Home">
+    tools:context=".Comments">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:background="?attr/customLinearBackground">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewPosts"
+                android:id="@+id/recyclerViewComments"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -33,8 +33,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:contentDescription="Add a post"
-            android:src="@drawable/ic_add"
+            android:contentDescription="Add a comment"
+            android:src="@drawable/ic_add_comment"
             app:backgroundTint="#2196F3"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
             android:tint="@android:color/white"/>

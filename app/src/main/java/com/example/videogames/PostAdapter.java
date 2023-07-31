@@ -1,7 +1,10 @@
 package com.example.videogames;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +62,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = posts.get(position);
         String friendlyTime = getFriendlyTime(post.getDate());
-        holder.textViewAvatar.setText(String.valueOf(post.getUserEmail().charAt(0)));
+        holder.textViewAvatar.setText(String.valueOf(post.getUserEmail().charAt(0)).toUpperCase());
         holder.textViewName.setText(post.getUserEmail());
         holder.textViewContent.setText(post.getContent());
         holder.textViewDate.setText(post.getDate());
@@ -153,6 +156,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.textViewAvatar.setOnClickListener(v -> showUserProfile(v, post));
 
         holder.textViewName.setOnClickListener(v -> showUserProfile(v, post));
+
+        holder.buttonComment.setOnClickListener(v -> {
+            Intent intent = new Intent(context, Comments.class);
+            intent.putExtra("postId", post.getDate());
+            context.startActivity(intent);
+        });
     }
 
     private void showUserProfile(View v, Post post) {
@@ -226,6 +235,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView textViewDate;
         ImageView imageViewPost;
         ImageButton buttonHeart;
+        ImageButton buttonComment;
         TextView textViewLikes;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -237,6 +247,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             textViewLikes = itemView.findViewById(R.id.textViewLikes);
             imageViewPost = itemView.findViewById(R.id.imageViewPost);
             buttonHeart = itemView.findViewById(R.id.buttonHeart);
+            buttonComment = itemView.findViewById(R.id.buttonComment);
         }
     }
 

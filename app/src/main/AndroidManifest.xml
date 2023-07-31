@@ -24,6 +24,9 @@
         android:theme="@style/Theme.Videogames"
         tools:targetApi="31">
         <activity
+            android:name=".Comments"
+            android:exported="false" />
+        <activity
             android:name=".Register"
             android:exported="false" />
         <activity
