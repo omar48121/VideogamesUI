@@ -12,11 +12,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +37,7 @@ public class Comments extends AppCompatActivity {
     private RecyclerView recyclerViewComments;
     private CommentAdapter commentAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    TextView textViewCloseComments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,9 @@ public class Comments extends AppCompatActivity {
         recyclerViewComments.setLayoutManager(new LinearLayoutManager(this));
         commentAdapter = new CommentAdapter(this);
         recyclerViewComments.setAdapter(commentAdapter);
+        textViewCloseComments = findViewById(R.id.textCloseComments);
+
+        swipeRefreshLayout.setOnRefreshListener(this::getComments);
 
         String postId = getIntent().getStringExtra("postId");
 
@@ -108,6 +115,10 @@ public class Comments extends AppCompatActivity {
             Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
             negativeButton.setTextAppearance(R.style.NegativeButtonTextStyle);
         });
+
+        textViewCloseComments.setOnClickListener(v -> {
+            finish();
+        });
     }
 
     private void getComments() {
@@ -124,9 +135,21 @@ public class Comments extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 if (response.isSuccessful()) {
+                    swipeRefreshLayout.setRefreshing(false);
+
                     List<Comment> comments = response.body();
                     commentAdapter.setComments(comments);
                     commentAdapter.notifyDataSetChanged();
+
+                    TextView textViewNoComments = findViewById(R.id.textViewNoComments);
+                    ImageView marioImage = findViewById(R.id.marioImage);
+                    if (comments.isEmpty()) {
+                        marioImage.setVisibility(View.VISIBLE);
+                        textViewNoComments.setVisibility(View.VISIBLE);
+                    } else {
+                        textViewNoComments.setVisibility(View.GONE);
+                        marioImage.setVisibility(View.GONE);
+                    }
                 } else {
                     Toast.makeText(Comments.this, "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
                 }

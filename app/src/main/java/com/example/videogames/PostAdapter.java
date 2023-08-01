@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,9 +72,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.textViewLikes.setText(String.valueOf(post.getLikes()));
         holder.buttonHeart.setEnabled(!post.isLikesButtonDisabled());
         Glide.with(holder.itemView)
-                .load(post.getImageUrl()) // Reemplaza post.getImageUrl() con la URL de la imagen del post
+                .load(post.getImageUrl())
                 .into(holder.imageViewPost);
-        // set icons on load
+
         final boolean[] isLiked = {isPostLikedByUser(post, likedPosts)};
         final int[] likesCount = {post.getLikes()};
         if (isLiked[0]) {
@@ -81,60 +83,68 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
         }
 
-        // update icons on click
-        holder.buttonHeart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (Objects.equals(post.getUserEmail(), getLoggedInUserEmail())) {
+            holder.buttonEdit.setVisibility(View.VISIBLE);
+        } else {
+            holder.buttonEdit.setVisibility(View.GONE);
+        }
 
-                if (!post.isLikesButtonDisabled()) {
-                    post.setLikesButtonDisabled(true);
-                    holder.buttonHeart.setEnabled(false);
+        holder.buttonEdit.setOnClickListener(v -> {
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_Dialog_Alert);
+            dialog.setContentView(R.layout.dialog_edit_post);
 
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://10.0.2.2:3000/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
+            dialog.show();
+        });
 
-                    PostApiService apiInterface = retrofit.create(PostApiService.class);
-                    Call<Void> call;
+        holder.buttonHeart.setOnClickListener(v -> {
+            if (!post.isLikesButtonDisabled()) {
+                post.setLikesButtonDisabled(true);
+                holder.buttonHeart.setEnabled(false);
 
-                    if (isLiked[0]) {
-                        call = apiInterface.decreaseCounter(getLoggedInUserEmail(), post.getDate());
-                    } else {
-                        call = apiInterface.increaseCounter(getLoggedInUserEmail(), post.getDate());
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://10.0.2.2:3000/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                PostApiService apiInterface = retrofit.create(PostApiService.class);
+                Call<Void> call;
+
+                if (isLiked[0]) {
+                    call = apiInterface.decreaseCounter(getLoggedInUserEmail(), post.getDate());
+                } else {
+                    call = apiInterface.increaseCounter(getLoggedInUserEmail(), post.getDate());
+                }
+
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        post.setLikesButtonDisabled(false);
+                        holder.buttonHeart.setEnabled(true);
+
+                        if (response.isSuccessful()) {
+                            if (isLiked[0]) {
+                                holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
+                                holder.textViewLikes.setText(String.valueOf(likesCount[0] - 1));
+                                likesCount[0]--;
+                            } else {
+                                holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_full);
+                                holder.textViewLikes.setText(String.valueOf(likesCount[0] + 1));
+                                likesCount[0]++;
+                            }
+                            isLiked[0] = !isLiked[0];
+                            Toast.makeText(v.getContext(), "Like guardado", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(v.getContext(), "Error al guardar like", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
-                    call.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, Response<Void> response) {
-                            post.setLikesButtonDisabled(false);
-                            holder.buttonHeart.setEnabled(true);
-
-                            if (response.isSuccessful()) {
-                                if (isLiked[0]) {
-                                    holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_empty);
-                                    holder.textViewLikes.setText(String.valueOf(likesCount[0] - 1));
-                                    likesCount[0]--;
-                                } else {
-                                    holder.buttonHeart.setBackgroundResource(R.drawable.ic_heart_full);
-                                    holder.textViewLikes.setText(String.valueOf(likesCount[0] + 1));
-                                    likesCount[0]++;
-                                }
-                                isLiked[0] = !isLiked[0];
-                                Toast.makeText(v.getContext(), "Like guardado", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(v.getContext(), "Error al guardar like", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            post.setLikesButtonDisabled(false);
-                            holder.buttonHeart.setEnabled(true);
-                            Toast.makeText(v.getContext(), "Fallo en req al server", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        post.setLikesButtonDisabled(false);
+                        holder.buttonHeart.setEnabled(true);
+                        Toast.makeText(v.getContext(), "Fallo en req al server", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -171,6 +181,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView textViewFullName = dialog.findViewById(R.id.textViewFullname);
         TextView textViewEmail = dialog.findViewById(R.id.textViewEmail);
         TextView textViewBirthDate = dialog.findViewById(R.id.textViewBirthDate);
+        TextView textViewAvatar = dialog.findViewById(R.id.textViewAvatar);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:3000/")
@@ -190,6 +201,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         String email = jsonObject.getString("email");
                         String birthDate = jsonObject.getString("birthDate");
 
+                        textViewAvatar.setText(String.valueOf(post.getUserEmail().charAt(0)).toUpperCase());
                         textViewFullName.setText(fullName);
                         textViewEmail.setText("Correo: " + email);
                         textViewBirthDate.setText("Fecha de nacimiento: " + birthDate.substring(0, 12));
@@ -236,6 +248,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         ImageView imageViewPost;
         ImageButton buttonHeart;
         ImageButton buttonComment;
+        ImageButton buttonEdit;
         TextView textViewLikes;
 
         public PostViewHolder(@NonNull View itemView) {
@@ -248,6 +261,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             imageViewPost = itemView.findViewById(R.id.imageViewPost);
             buttonHeart = itemView.findViewById(R.id.buttonHeart);
             buttonComment = itemView.findViewById(R.id.buttonComment);
+            buttonEdit = itemView.findViewById(R.id.buttonEdit);
         }
     }
 
@@ -260,7 +274,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             long currentTimeMillis = System.currentTimeMillis();
             long diffMillis = currentTimeMillis - timeMillis;
 
-            // Calcular la diferencia de tiempo en minutos, horas y días
             int minutes = (int) (diffMillis / (60 * 1000));
             int hours = (int) (diffMillis / (60 * 60 * 1000));
             int days = (int) (diffMillis / (24 * 60 * 60 * 1000));

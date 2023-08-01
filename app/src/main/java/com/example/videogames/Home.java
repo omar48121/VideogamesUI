@@ -94,113 +94,90 @@ public class Home extends AppCompatActivity {
                     }
                 });
 
-        /* swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
-                getExamplePosts();
-            }
-        }); */
+        swipeRefreshLayout.setOnRefreshListener(this::getExamplePosts);
 
         FloatingActionButton fabCreatePost = findViewById(R.id.fabCreatePost);
         fabCreatePost.setImageTintList(ColorStateList.valueOf(Color.WHITE));
-        fabCreatePost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedImageUri = null;
-                AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_post, null);
-                builder.setView(dialogView);
+        fabCreatePost.setOnClickListener(v -> {
+            selectedImageUri = null;
+            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_create_post, null);
+            builder.setView(dialogView);
 
-                EditText editTextContent = dialogView.findViewById(R.id.editTextContent);
-                buttonUploadImage = dialogView.findViewById(R.id.buttonUploadImage);
-                previewImage = dialogView.findViewById(R.id.imagePreviewX);
+            EditText editTextContent = dialogView.findViewById(R.id.editTextContent);
+            buttonUploadImage = dialogView.findViewById(R.id.buttonUploadImage);
+            previewImage = dialogView.findViewById(R.id.imagePreviewX);
 
-                buttonUploadImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final CharSequence[] options = {"Galería", "Cancelar"};
+            buttonUploadImage.setOnClickListener(v1 -> {
+                final CharSequence[] options = {"Galería", "Cancelar"};
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder.setTitle("Seleccionar una opción");
-                        builder.setItems(options, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int item) {
-                                if (options[item].equals("si")) {
-                                    //dispatchTakePictureIntent();
-                                } else if (options[item].equals("Galería")) {
-                                    Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                    pickPhotoLauncher.launch(pickPhotoIntent);
-                                } else if (options[item].equals("Cancelar")) {
-                                    dialog.dismiss();
-                                }
-                            }
-                        });
-                        builder.show();
-                    }
-                });
-
-                builder.setPositiveButton("Publicar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String content = editTextContent.getText().toString();
-                        String email = getLoggedInUserEmail();
-                        String imageUrl;
-
-                        if (selectedImageUri != null) {
-                            imageUrl = selectedImageUri.toString();
-                        } else {
-                            imageUrl = "";
-                        }
-
-                        if (content.isEmpty()) {
-                            Toast.makeText(Home.this, "Ingresa el texto de la publicación", Toast.LENGTH_SHORT).show();
-                        } else if (imageUrl.isEmpty()) {
-                            Toast.makeText(Home.this, "Selecciona una imagen", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://10.0.2.2:3000/")
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
-
-                            PostApiService apiInterface = retrofit.create(PostApiService.class);
-
-                            Call<Void> call = apiInterface.createPost(content, email, imageUrl);
-                            call.enqueue(new Callback<Void>() {
-                                @Override
-                                public void onResponse(Call<Void> call, Response<Void> response) {
-                                    if (response.isSuccessful()) {
-                                        getExamplePosts();
-                                        Toast.makeText(Home.this, "Post creado", Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss();
-                                    } else {
-                                        Toast.makeText(Home.this, "Error al crear el post", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<Void> call, Throwable t) {
-                                    Toast.makeText(Home.this, "Error en solicitud al server", Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    }
-                });
-                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(Home.this);
+                builder1.setTitle("Seleccionar una opción");
+                builder1.setItems(options, (dialog, item) -> {
+                    if (options[item].equals("Cámara")) {
+                        //dispatchTakePictureIntent();
+                    } else if (options[item].equals("Galería")) {
+                        Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        pickPhotoLauncher.launch(pickPhotoIntent);
+                    } else if (options[item].equals("Cancelar")) {
                         dialog.dismiss();
                     }
                 });
+                builder1.show();
+            });
 
-                // Mostrar el diálogo
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+            builder.setPositiveButton("Publicar", (dialog, which) -> {
+                String content = editTextContent.getText().toString();
+                String email = getLoggedInUserEmail();
+                String imageUrl;
 
-                Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                negativeButton.setTextAppearance(R.style.NegativeButtonTextStyle);
-            }
+                if (selectedImageUri != null) {
+                    imageUrl = selectedImageUri.toString();
+                } else {
+                    imageUrl = "";
+                }
+
+                if (content.isEmpty()) {
+                    Toast.makeText(Home.this, "Ingresa el texto de la publicación", Toast.LENGTH_SHORT).show();
+                } else if (imageUrl.isEmpty()) {
+                    Toast.makeText(Home.this, "Selecciona una imagen", Toast.LENGTH_SHORT).show();
+                } else {
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://10.0.2.2:3000/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    PostApiService apiInterface = retrofit.create(PostApiService.class);
+
+                    Call<Void> call = apiInterface.createPost(content, email, imageUrl);
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                getExamplePosts();
+                                Toast.makeText(Home.this, "Post creado", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(Home.this, "Error al crear el post", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(Home.this, "Error en solicitud al server", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+
+            // Mostrar el diálogo
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
+            Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            negativeButton.setTextAppearance(R.style.NegativeButtonTextStyle);
         });
 
         getExamplePosts();
@@ -251,7 +228,6 @@ public class Home extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<UserModel> users = response.body();
                     if (users != null) {
-                        // Buscar el usuario que coincida con el correo electrónico
                         List<String> likedPosts = null;
                         for (UserModel user : users) {
                             if (user.getEmail().equals(userEmail)) {
@@ -260,8 +236,8 @@ public class Home extends AppCompatActivity {
                             }
                         }
 
-                        // Verificar que likedPosts no sea nulo antes de pasarlo al adaptador
                         if (likedPosts != null) {
+                            swipeRefreshLayout.setRefreshing(false);
                             postAdapter.setPosts(posts);
                             postAdapter.setLikedPosts(likedPosts);
                             postAdapter.notifyDataSetChanged();

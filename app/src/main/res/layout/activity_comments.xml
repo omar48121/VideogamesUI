@@ -4,16 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Comments">
+    tools:context=".Comments"
+    android:background="@drawable/background_gradient">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/textCloseComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Cerrar"
+            android:textColor="@color/my_light_primary" />
+        <!-- Texto "Comentarios de la publicación" -->
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:padding="16dp"
+            android:text="Comentarios de la publicación"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/textViewTitle"
             android:background="?attr/customLinearBackground">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -22,6 +44,27 @@
                 android:layout_height="match_parent" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:id="@+id/textViewNoComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Aún no hay comentarios"
+            android:textSize="17sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/marioImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="0dp"
+            android:src="@drawable/mario_thinking"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabCreatePost"
@@ -35,9 +78,9 @@
             android:layout_marginBottom="16dp"
             android:contentDescription="Add a comment"
             android:src="@drawable/ic_add_comment"
+            android:tint="@android:color/white"
             app:backgroundTint="#2196F3"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
-            android:tint="@android:color/white"/>
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular" />
 
     </RelativeLayout>
 

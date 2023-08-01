@@ -89,6 +89,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         TextView textViewFullName = dialog.findViewById(R.id.textViewFullname);
         TextView textViewEmail = dialog.findViewById(R.id.textViewEmail);
         TextView textViewBirthDate = dialog.findViewById(R.id.textViewBirthDate);
+        TextView textViewAvatar = dialog.findViewById(R.id.textViewAvatar);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:3000/")
@@ -108,6 +109,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                         String email = jsonObject.getString("email");
                         String birthDate = jsonObject.getString("birthDate");
 
+                        textViewAvatar.setText(String.valueOf(comment.getUserEmail().charAt(0)).toUpperCase());
                         textViewFullName.setText(fullName);
                         textViewEmail.setText("Correo: " + email);
                         textViewBirthDate.setText("Fecha de nacimiento: " + birthDate.substring(0, 12));
