@@ -90,7 +90,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         holder.buttonEdit.setOnClickListener(v -> {
-            final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_Dialog_Alert);
+            final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_NoActionBar);
             dialog.setContentView(R.layout.dialog_edit_post);
 
             dialog.show();
