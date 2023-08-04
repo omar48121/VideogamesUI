@@ -109,13 +109,13 @@ public class Home extends AppCompatActivity {
             previewImage = dialogView.findViewById(R.id.imagePreviewX);
 
             buttonUploadImage.setOnClickListener(v1 -> {
-                final CharSequence[] options = {"Galería", "Cancelar"};
+                final CharSequence[] options = {"Cámara", "Galería", "Cancelar"};
 
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(Home.this);
                 builder1.setTitle("Seleccionar una opción");
                 builder1.setItems(options, (dialog, item) -> {
                     if (options[item].equals("Cámara")) {
-                        //dispatchTakePictureIntent();
+                        dispatchTakePictureIntent();
                     } else if (options[item].equals("Galería")) {
                         Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         pickPhotoLauncher.launch(pickPhotoIntent);
@@ -143,7 +143,7 @@ public class Home extends AppCompatActivity {
                     Toast.makeText(Home.this, "Selecciona una imagen", Toast.LENGTH_SHORT).show();
                 } else {
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://10.0.2.2:3000/")
+                            .baseUrl(ApiConfig.BASE_URL)
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
@@ -185,7 +185,7 @@ public class Home extends AppCompatActivity {
 
     private void getExamplePosts() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
+                .baseUrl(ApiConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -215,7 +215,7 @@ public class Home extends AppCompatActivity {
 
     private void getLikedPosts(String userEmail, List<Post> posts) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
+                .baseUrl(ApiConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -267,14 +267,14 @@ public class Home extends AppCompatActivity {
         return Uri.parse(path);
     }
 
-    /*private void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(Home.this, "No se pudo abrir la cámara", Toast.LENGTH_SHORT).show();
         }
-    }*/
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

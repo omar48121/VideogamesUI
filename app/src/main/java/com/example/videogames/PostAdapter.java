@@ -64,11 +64,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Post post = posts.get(position);
         String friendlyTime = getFriendlyTime(post.getDate());
+        holder.textViewDate.setText(friendlyTime);
         holder.textViewAvatar.setText(String.valueOf(post.getUserEmail().charAt(0)).toUpperCase());
         holder.textViewName.setText(post.getUserEmail());
         holder.textViewContent.setText(post.getContent());
-        holder.textViewDate.setText(post.getDate());
-        //holder.textViewDate.setText(friendlyTime);
+        //holder.textViewDate.setText(post.getDate());
         holder.textViewLikes.setText(String.valueOf(post.getLikes()));
         holder.buttonHeart.setEnabled(!post.isLikesButtonDisabled());
         Glide.with(holder.itemView)
@@ -102,7 +102,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 holder.buttonHeart.setEnabled(false);
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://10.0.2.2:3000/")
+                        .baseUrl(ApiConfig.BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -132,9 +132,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                 likesCount[0]++;
                             }
                             isLiked[0] = !isLiked[0];
-                            Toast.makeText(v.getContext(), "Like guardado", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(v.getContext(), "Marcado como me gusta", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(v.getContext(), "Error al guardar like", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(v.getContext(), "Error al guardar me gusta", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -184,7 +184,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView textViewAvatar = dialog.findViewById(R.id.textViewAvatar);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
+                .baseUrl(ApiConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

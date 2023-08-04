@@ -75,7 +75,7 @@ public class Comments extends AppCompatActivity {
                     Toast.makeText(Comments.this, "Ingresa el comentario", Toast.LENGTH_SHORT).show();
                 } else {
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://10.0.2.2:3000/")
+                            .baseUrl(ApiConfig.BASE_URL)
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
@@ -124,7 +124,7 @@ public class Comments extends AppCompatActivity {
     private void getComments() {
         String postId = getIntent().getStringExtra("postId");
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
+                .baseUrl(ApiConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

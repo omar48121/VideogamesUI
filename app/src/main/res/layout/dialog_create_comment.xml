@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:height="80dp"
         android:gravity="start|top"
-        android:hint="Escribe el comentario"
+        android:hint="Escribe un comentario"
         android:maxLines="5"
         android:scrollbars="vertical" />
 

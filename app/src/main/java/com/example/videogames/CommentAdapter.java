@@ -58,9 +58,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         String friendlyTime = getFriendlyTime(comment.getDate());
         holder.textViewAvatar.setText(String.valueOf(comment.getUserEmail().charAt(0)).toUpperCase());
         holder.textViewName.setText(comment.getUserEmail());
-        holder.textViewDate.setText(comment.getDate());
+        //holder.textViewDate.setText(comment.getDate());
         holder.textViewText.setText(comment.getText());
-        //holder.textViewDate.setText(friendlyTime);
+        holder.textViewDate.setText(friendlyTime);
 
         holder.textViewAvatar.setOnClickListener(v -> showUserProfile(v, comment));
 
@@ -92,7 +92,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         TextView textViewAvatar = dialog.findViewById(R.id.textViewAvatar);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
+                .baseUrl(ApiConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
