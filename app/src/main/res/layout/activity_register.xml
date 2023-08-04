@@ -90,7 +90,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Fecha de nacimiento"
-        android:inputType="date"
+        android:inputType="none"
+        android:focusable="false"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintStart_toStartOf="@+id/editTextTextPassword"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />

@@ -66,10 +66,12 @@ public class Comments extends AppCompatActivity {
             builder.setView(dialogView);
 
             EditText editTextContent = dialogView.findViewById(R.id.editTextComment);
+            editTextContent.requestFocus();
 
             builder.setPositiveButton("Comentar", (dialog, which) -> {
                 String content = editTextContent.getText().toString();
                 String email = getLoggedInUserEmail();
+                String fullName = getLoggedInUserFullName();
 
                 if (content.isEmpty()) {
                     Toast.makeText(Comments.this, "Ingresa el comentario", Toast.LENGTH_SHORT).show();
@@ -81,7 +83,7 @@ public class Comments extends AppCompatActivity {
 
                     PostApiService apiInterface = retrofit.create(PostApiService.class);
 
-                    Call<Void> call = apiInterface.createComment(email, content, postId);
+                    Call<Void> call = apiInterface.createComment(email, content, postId, fullName);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
@@ -102,12 +104,7 @@ public class Comments extends AppCompatActivity {
                     });
                 }
             });
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
@@ -165,5 +162,10 @@ public class Comments extends AppCompatActivity {
     public String getLoggedInUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString("email", "");
+    }
+
+    public String getLoggedInUserFullName() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("fullName", "");
     }
 }

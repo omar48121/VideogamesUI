@@ -2,13 +2,18 @@ package com.example.videogames;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +47,10 @@ public class Register extends AppCompatActivity {
         buttonBackToLogin.setOnClickListener(v -> {
             startActivity(new Intent(Register.this, MainActivity.class));
             finish();
+        });
+
+        editTextDate.setOnClickListener(v -> {
+            showDatePickerDialog();
         });
 
         buttonConfirmRegister.setOnClickListener(v -> {
@@ -119,5 +128,21 @@ public class Register extends AppCompatActivity {
                 }
             });
         });
+    }
+
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, year1, monthOfYear, dayOfMonth) -> {
+                    String formattedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year1, monthOfYear + 1, dayOfMonth);
+
+                    editTextDate.setText(formattedDate);
+                }, year, month, day);
+
+        datePickerDialog.show();
     }
 }

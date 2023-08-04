@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -44,13 +45,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private List<Post> posts;
     private Context context;
+    private Home homeActivity;
     private List<String> likedPosts;
     private SharedPreferences sharedPreferences;
 
-    public PostAdapter(Context context, SharedPreferences sharedPreferences) {
+    public PostAdapter(Context context, SharedPreferences sharedPreferences, Home homeActivity) {
         this.context = context;
         this.posts = new ArrayList<>();
         this.sharedPreferences = sharedPreferences;
+        this.homeActivity = homeActivity;
     }
 
     @NonNull
@@ -66,7 +69,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String friendlyTime = getFriendlyTime(post.getDate());
         holder.textViewDate.setText(friendlyTime);
         holder.textViewAvatar.setText(String.valueOf(post.getUserEmail().charAt(0)).toUpperCase());
-        holder.textViewName.setText(post.getUserEmail());
+        holder.textViewName.setText(post.getUserFullName());
         holder.textViewContent.setText(post.getContent());
         //holder.textViewDate.setText(post.getDate());
         holder.textViewLikes.setText(String.valueOf(post.getLikes()));
@@ -92,6 +95,49 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.buttonEdit.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(context, android.R.style.Theme_Material_NoActionBar);
             dialog.setContentView(R.layout.dialog_edit_post);
+
+            TextView content = dialog.findViewById(R.id.editPostContent);
+            ImageView image = dialog.findViewById(R.id.imagePreviewEditor);
+            FloatingActionButton fabDone = dialog.findViewById(R.id.fabDone);
+
+            content.setText(post.getContent());
+            Glide.with(context)
+                    .load(post.getImageUrl())
+                    .into(image);
+
+            fabDone.setOnClickListener(v1 -> {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(ApiConfig.BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                PostApiService apiInterface = retrofit.create(PostApiService.class);
+                Call<Void> call = apiInterface.updatePost(post.getDate(), content.getText().toString());
+
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(v.getContext(), "Publicación actualizada", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+
+                            if (homeActivity != null) {
+                                homeActivity.getExamplePosts();
+                            }
+                        } else {
+                            Toast.makeText(v.getContext(), "Ocurrió un error al guardar", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(v.getContext(), "Error del servidor", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
+
+            TextView textClose = dialog.findViewById(R.id.textCloseEditor);
+            textClose.setOnClickListener(v1 -> dialog.dismiss());
 
             dialog.show();
         });
@@ -132,9 +178,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                 likesCount[0]++;
                             }
                             isLiked[0] = !isLiked[0];
-                            Toast.makeText(v.getContext(), "Marcado como me gusta", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(v.getContext(), "Error al guardar me gusta", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(v.getContext(), "Error al actualizar me gusta", Toast.LENGTH_SHORT).show();
                         }
                     }
 

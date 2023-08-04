@@ -57,7 +57,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Comment comment = comments.get(position);
         String friendlyTime = getFriendlyTime(comment.getDate());
         holder.textViewAvatar.setText(String.valueOf(comment.getUserEmail().charAt(0)).toUpperCase());
-        holder.textViewName.setText(comment.getUserEmail());
+        holder.textViewName.setText(comment.getFullName());
         //holder.textViewDate.setText(comment.getDate());
         holder.textViewText.setText(comment.getText());
         holder.textViewDate.setText(friendlyTime);

@@ -85,15 +85,40 @@ public class MainActivity extends AppCompatActivity {
                     String message = loginResponse.getMessage();
 
                     if ("login success".equals(message)) {
-                        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("email", email);
-                        editor.putString("password", password);
-                        editor.putBoolean("remind", switchRemind.isChecked());
-                        editor.apply();
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl(ApiConfig.BASE_URL)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
 
-                        startActivity(new Intent(MainActivity.this, Home.class));
-                        finish();
+                        LoginInterface loginInterface = retrofit.create(LoginInterface.class);
+                        Call<String> call2 = loginInterface.getFullName(email);
+
+                        call2.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                if (response.isSuccessful()) {
+                                    String fullName = response.body();
+
+                                    SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("email", email);
+                                    editor.putString("fullName", fullName);
+                                    editor.putString("password", password);
+                                    editor.putBoolean("remind", switchRemind.isChecked());
+                                    editor.apply();
+
+                                    startActivity(new Intent(MainActivity.this, Home.class));
+                                    finish();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Usuario no obtenido", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Toast.makeText(MainActivity.this, "Error al obtener datos del server", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } else if ("user doesnt exist".equals(message)) {
                         Toast.makeText(MainActivity.this, "El usuario no existe", Toast.LENGTH_SHORT).show();
                     } else {

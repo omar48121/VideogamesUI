@@ -1,6 +1,7 @@
 package com.example.videogames;
 
 public class Post {
+    private String userFullName;
     private String userEmail;
     private String content;
     private String imageUrl;
@@ -9,13 +10,16 @@ public class Post {
     private boolean likesButtonDisabled;
 
 
-    public Post(String userEmail, String content, String imageUrl, String date) {
+    public Post(String userFullName, String userEmail, String content, String imageUrl, String date) {
+        this.userFullName = userFullName;
         this.userEmail = userEmail;
         this.content = content;
         this.imageUrl = imageUrl;
         this.date = date;
         this.likes = 0;
     }
+
+    public String getUserFullName() { return userFullName; };
 
     public String getUserEmail() {
         return userEmail;

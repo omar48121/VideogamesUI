@@ -9,4 +9,8 @@ public interface LoginInterface {
     @FormUrlEncoded
     @POST("users/login")
     Call<LoginResponse> loginUser(@Field("email") String email, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("users/getFullName")
+    Call<String> getFullName(@Field("email") String email);
 }

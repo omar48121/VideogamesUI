@@ -66,7 +66,7 @@ public class Home extends AppCompatActivity {
         recyclerViewPosts.setLayoutManager(new LinearLayoutManager(this));
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-        postAdapter = new PostAdapter(this, sharedPreferences);
+        postAdapter = new PostAdapter(this, sharedPreferences, this);
         recyclerViewPosts.setAdapter(postAdapter);
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -129,6 +129,7 @@ public class Home extends AppCompatActivity {
             builder.setPositiveButton("Publicar", (dialog, which) -> {
                 String content = editTextContent.getText().toString();
                 String email = getLoggedInUserEmail();
+                String fullName = getLoggedInUserFullName();
                 String imageUrl;
 
                 if (selectedImageUri != null) {
@@ -149,7 +150,7 @@ public class Home extends AppCompatActivity {
 
                     PostApiService apiInterface = retrofit.create(PostApiService.class);
 
-                    Call<Void> call = apiInterface.createPost(content, email, imageUrl);
+                    Call<Void> call = apiInterface.createPost(content, email, imageUrl, fullName);
                     call.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call, Response<Void> response) {
@@ -183,7 +184,7 @@ public class Home extends AppCompatActivity {
         getExamplePosts();
     }
 
-    private void getExamplePosts() {
+    public void getExamplePosts() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -258,6 +259,11 @@ public class Home extends AppCompatActivity {
     public String getLoggedInUserEmail() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         return sharedPreferences.getString("email", "");
+    }
+
+    public String getLoggedInUserFullName() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("fullName", "");
     }
 
     private Uri getImageUri(Context context, Bitmap bitmap) {
