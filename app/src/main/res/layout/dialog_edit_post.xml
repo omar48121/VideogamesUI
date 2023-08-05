@@ -55,9 +55,19 @@
             <ImageView
                 android:id="@+id/imagePreviewEditor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="350dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/buttonDeletePost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#FF4141"
+                android:textColor="@color/white"
+                android:text="Eliminar publicación" />
         </LinearLayout>
 
 

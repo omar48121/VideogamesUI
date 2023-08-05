@@ -94,7 +94,7 @@ public class Home extends AppCompatActivity {
                     }
                 });
 
-        swipeRefreshLayout.setOnRefreshListener(this::getExamplePosts);
+        //swipeRefreshLayout.setOnRefreshListener(this::getExamplePosts);
 
         FloatingActionButton fabCreatePost = findViewById(R.id.fabCreatePost);
         fabCreatePost.setImageTintList(ColorStateList.valueOf(Color.WHITE));
@@ -109,7 +109,7 @@ public class Home extends AppCompatActivity {
             previewImage = dialogView.findViewById(R.id.imagePreviewX);
 
             buttonUploadImage.setOnClickListener(v1 -> {
-                final CharSequence[] options = {"Cámara", "Galería", "Cancelar"};
+                final CharSequence[] options = {"Galería", "Cancelar"};
 
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(Home.this);
                 builder1.setTitle("Seleccionar una opción");

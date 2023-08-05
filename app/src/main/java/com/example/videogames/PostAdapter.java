@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -99,11 +100,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             TextView content = dialog.findViewById(R.id.editPostContent);
             ImageView image = dialog.findViewById(R.id.imagePreviewEditor);
             FloatingActionButton fabDone = dialog.findViewById(R.id.fabDone);
+            Button buttonDeletePost = dialog.findViewById(R.id.buttonDeletePost);
 
             content.setText(post.getContent());
             Glide.with(context)
                     .load(post.getImageUrl())
                     .into(image);
+            
+            buttonDeletePost.setOnClickListener(v2 -> {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(ApiConfig.BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                PostApiService apiInterface = retrofit.create(PostApiService.class);
+                Call<Void> call = apiInterface.deletePost(post.getDate());
+                
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Toast.makeText(v.getContext(), "publicación borrada", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        homeActivity.getExamplePosts();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(v.getContext(), "no se pudo borrar", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
 
             fabDone.setOnClickListener(v1 -> {
                 Retrofit retrofit = new Retrofit.Builder()
