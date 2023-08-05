@@ -115,18 +115,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                 PostApiService apiInterface = retrofit.create(PostApiService.class);
                 Call<Void> call = apiInterface.deletePost(post.getDate());
-                
+
                 call.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
-                        Toast.makeText(v.getContext(), "publicación borrada", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Publicación eliminada", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         homeActivity.getExamplePosts();
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(v.getContext(), "no se pudo borrar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "No se pudo eliminar", Toast.LENGTH_SHORT).show();
                     }
                 });
             });
