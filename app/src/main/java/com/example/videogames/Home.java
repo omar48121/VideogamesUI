@@ -68,6 +68,8 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        Menu = findViewById(R.id.toolbar);
+        setSupportActionBar(Menu);
 
         recyclerViewPosts = findViewById(R.id.recyclerViewPosts);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -317,4 +319,22 @@ public class Home extends AppCompatActivity {
             buttonUploadImage.setVisibility(View.GONE);
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_cerrarsession) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            // Realiza acciones cuando se seleccione el ítem del menú
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

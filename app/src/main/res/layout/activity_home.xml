@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home">
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/menugames"/>
 
 
     <LinearLayout
@@ -20,7 +23,9 @@
             android:padding="16dp"
             android:text="Comunidad"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
+
 
         <RelativeLayout
             android:layout_width="match_parent"
