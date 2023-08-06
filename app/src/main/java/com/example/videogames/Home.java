@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -25,12 +26,16 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -44,6 +49,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
 public class Home extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -55,10 +61,18 @@ public class Home extends AppCompatActivity {
     Button buttonUploadImage;
     ImageView previewImage;
 
+    Toolbar menu1;
+
+    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        menu1 = findViewById(R.id.menu);
+        setSupportActionBar(menu1);
+
+        sharedPreferences =getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         recyclerViewPosts = findViewById(R.id.recyclerViewPosts);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -97,6 +111,13 @@ public class Home extends AppCompatActivity {
         //swipeRefreshLayout.setOnRefreshListener(this::getExamplePosts);
 
         FloatingActionButton fabCreatePost = findViewById(R.id.fabCreatePost);
+        FloatingActionButton games = findViewById(R.id.btngames);
+
+        games.setOnClickListener(v1 -> {
+            Intent intent = new Intent(this, menugames.class);
+            startActivity(intent);
+        });
+
         fabCreatePost.setImageTintList(ColorStateList.valueOf(Color.WHITE));
         fabCreatePost.setOnClickListener(v -> {
             selectedImageUri = null;
@@ -183,6 +204,7 @@ public class Home extends AppCompatActivity {
 
         getExamplePosts();
     }
+
 
     public void getExamplePosts() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -299,5 +321,37 @@ public class Home extends AppCompatActivity {
 
             buttonUploadImage.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menugames, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_logout) {
+            logOut();
+            return false;
+        } else if (item.getItemId() == R.id.forget_menu_logout) {
+            eraseSession();
+            logOut();
+            return false;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    void eraseSession(){
+    sharedPreferences.edit().clear().apply();
+    }
+    void logOut(){
+        Intent intent= new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
     }
 }

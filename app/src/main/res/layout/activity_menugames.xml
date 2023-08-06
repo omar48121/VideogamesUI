@@ -6,10 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Home">
 
-    <include
-        android:id="@+id/menu"
-        layout="@layout/menu"
-        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,7 +17,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/background_gradient"
             android:padding="16dp"
-            android:text="Comunidad"
+            android:text="Videogames"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -43,7 +39,7 @@
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabCreatePost"
+                android:id="@+id/addgames"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -52,28 +48,11 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                android:contentDescription="Add a post"
-                android:src="@drawable/ic_add"
+                android:contentDescription="Add a games"
+                android:src="@drawable/baseline_add_to_photos_24"
                 app:backgroundTint="#2196F3"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular"
                 android:tint="@android:color/white"/>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btngames"
-                android:layout_width="67dp"
-                android:layout_height="84dp"
-                android:layout_above="@+id/fabCreatePost"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="13dp"
-                android:layout_marginBottom="-1dp"
-                android:contentDescription="Add a post"
-                android:src="@drawable/baseline_videogame_asset_24"
-                android:tint="@color/white"
-                app:backgroundTint="#B421F3"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Circular" />
-
 
         </RelativeLayout>
 

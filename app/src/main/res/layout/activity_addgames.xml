@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:height="80dp"
         android:gravity="start|top"
-        android:hint="Contenido de la publicación"
-        android:maxLines="5"
+        android:hint="Contenido del videojuego"
+        android:maxLines="7"
         android:scrollbars="vertical" />
 
     <Button
@@ -21,12 +21,18 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_border_dashed"
         android:textColor="#0095FF"
-        android:text="Añadir Videojuego" />
+        android:text="Añadir imagen" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Cancelar"
+        android:id="@+id/btncancelar"
+        ></Button>
     <ImageView
         android:id="@+id/imagePreviewX"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
         android:visibility="gone"

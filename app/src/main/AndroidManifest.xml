@@ -24,6 +24,12 @@
         android:theme="@style/Theme.Videogames"
         tools:targetApi="31">
         <activity
+            android:name=".addgames"
+            android:exported="false" />
+        <activity
+            android:name=".menugames"
+            android:exported="false" />
+        <activity
             android:name=".Comments"
             android:exported="false" />
         <activity

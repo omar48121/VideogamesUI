@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Videogames</string>
+    <string name="cancelar">Cancelar</string>
 </resources>

@@ -1,4 +1,5 @@
-package com.example.videogames;
+import com.example.videogames.Comment;
+import com.example.videogames.Post;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
-public interface PostApiService {
-    @GET("posts")
+public interface GameApiService {
+    @GET("videogames")
     Call<List<Post>> getPosts();
 
     @FormUrlEncoded
@@ -37,12 +38,12 @@ public interface PostApiService {
             @Field("userFullName") String userFullName
     );
 
-    @FormUrlEncoded
+    /*@FormUrlEncoded
     @PUT("posts")
     Call<Void> updatePost(
             @Field("postId") String postId,
             @Field("content") String content
-    );
+    );*/
 
     @FormUrlEncoded
     @POST("posts/remove")
