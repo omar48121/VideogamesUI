@@ -68,7 +68,7 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Menu = findViewById(R.id.toolbar);
+        /*llamo el id de la barra del menu*/Menu = findViewById(R.id.toolbar);
         setSupportActionBar(Menu);
 
         recyclerViewPosts = findViewById(R.id.recyclerViewPosts);
@@ -319,7 +319,7 @@ public class Home extends AppCompatActivity {
             buttonUploadImage.setVisibility(View.GONE);
         }
     }
-
+//***********************Implemento el menu de opciones**********************
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
