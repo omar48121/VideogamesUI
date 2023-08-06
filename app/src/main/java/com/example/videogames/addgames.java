@@ -16,10 +16,10 @@ public class addgames extends AppCompatActivity {
         setContentView(R.layout.activity_addgames);
         cancelar = findViewById(R.id.btncancelar);
 
-      cancelar.setOnClickListener(v1 ->{
-          Intent intent = new Intent(this, menugames.class);
-          startActivity(intent);
-      });
+        cancelar.setOnClickListener(v -> {
+            Intent intent = new Intent(this, menugames.class);
+            startActivity(intent);
+        });
 
 
     }

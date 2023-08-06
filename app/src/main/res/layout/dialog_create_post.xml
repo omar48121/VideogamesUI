@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_border_dashed"
         android:textColor="#0095FF"
-        android:text="Añadir Videojuego" />
+        android:text="Añadir Contenido" />
 
     <ImageView
         android:id="@+id/imagePreviewX"

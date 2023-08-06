@@ -61,18 +61,13 @@ public class Home extends AppCompatActivity {
     Button buttonUploadImage;
     ImageView previewImage;
 
-    Toolbar menu1;
+    Toolbar Menu;
 
-    SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        menu1 = findViewById(R.id.menu);
-        setSupportActionBar(menu1);
-
-        sharedPreferences =getSharedPreferences("Preferences", Context.MODE_PRIVATE);
 
         recyclerViewPosts = findViewById(R.id.recyclerViewPosts);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
@@ -321,37 +316,5 @@ public class Home extends AppCompatActivity {
 
             buttonUploadImage.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menugames, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_logout) {
-            logOut();
-            return false;
-        } else if (item.getItemId() == R.id.forget_menu_logout) {
-            eraseSession();
-            logOut();
-            return false;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    void eraseSession(){
-    sharedPreferences.edit().clear().apply();
-    }
-    void logOut(){
-        Intent intent= new Intent(this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
     }
 }
