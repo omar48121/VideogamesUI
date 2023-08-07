@@ -7,7 +7,7 @@
     tools:context=".Home">
    <!--incluye la barra de menu--> <include
         android:id="@+id/toolbar"
-        layout="@layout/menugames"/>
+        layout="@layout/menugamesadd"/>
 
 
     <LinearLayout

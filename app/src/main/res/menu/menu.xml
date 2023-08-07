@@ -8,4 +8,11 @@
     android:title="Cerrar session"
     app:showAsAction="always"
     />
+    <item
+        android:id="@+id/menu_videogame"
+        android:title="Videojuegos"/>
+    <item
+        android:id="@+id/posts"
+        android:title="Posts Usuarios"
+        />
 </menu>

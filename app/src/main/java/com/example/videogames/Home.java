@@ -333,6 +333,17 @@ public class Home extends AppCompatActivity {
             startActivity(intent);
             // Realiza acciones cuando se seleccione el ítem del menú
             return true;
+        }   if (id == R.id.menu_videogame) {
+            Intent intent = new Intent(this, menugames.class);
+            startActivity(intent);
+            // Realiza acciones cuando se seleccione el ítem del menú
+            return true;
+        }
+        if (id == R.id.posts) {
+            Intent intent = new Intent(this, Home.class);
+            startActivity(intent);
+            // Realiza acciones cuando se seleccione el ítem del menú
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

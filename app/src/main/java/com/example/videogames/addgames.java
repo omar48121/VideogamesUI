@@ -18,7 +18,7 @@ public class addgames extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addgames);
 
-        Menu = findViewById(R.id.menugames);
+       // Menu = findViewById(R.id.menugames);
 
         cancelar = findViewById(R.id.btncancelar);
 
@@ -33,7 +33,7 @@ public class addgames extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menuaddgames, menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
     @Override
@@ -45,7 +45,7 @@ public class addgames extends AppCompatActivity {
             // Realiza acciones cuando se seleccione el ítem del menú
             return true;
         }
-        if (id == R.id.posts) {
+        if (id == R.id.menu_videogame) {
             Intent intent = new Intent(this, Home.class);
             startActivity(intent);
             // Realiza acciones cuando se seleccione el ítem del menú
